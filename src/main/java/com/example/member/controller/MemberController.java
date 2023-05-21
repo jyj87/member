@@ -49,7 +49,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/")
-    public String findAll(Model model){
+    public String findAll(Model model) {
         List<MemberDTO> memberDTOList = memberService.findAll();
         // 어떠한 html로 가져갈 데이터가 있으면 model사용
         model.addAttribute("memberList", memberDTOList);
@@ -57,10 +57,26 @@ public class MemberController {
     }
 
     @GetMapping("/member/{id}")
-    public String findById(@PathVariable Long id,Model model){
+    public String findById(@PathVariable Long id, Model model) {
         MemberDTO memberDTO = memberService.findById(id);
-        model.addAttribute("member",memberDTO);
+        model.addAttribute("member", memberDTO);
         return "detail";
 
     }
+
+    @GetMapping("/member/update")
+    public String updateForm(HttpSession session, Model model) {
+        String myEmail = (String) session.getAttribute("loginEmail");
+        MemberDTO memberDTO = memberService.updateForm(myEmail);
+        model.addAttribute("updateMember", memberDTO);
+        return "update";
+
+    }
+
+    @PostMapping("/member/update")
+    public String update(@ModelAttribute MemberDTO memberDTO) {
+        memberService.update(memberDTO);
+        return "redirect:/member/" + memberDTO.getId();
+    }
+
 }

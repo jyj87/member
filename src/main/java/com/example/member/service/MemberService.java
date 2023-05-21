@@ -6,6 +6,7 @@ import com.example.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.MemberImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +66,23 @@ public class MemberService {
 
     public MemberDTO findById(Long id) {
         Optional<MemberEntity> memberEntity = memberRepository.findById(id);
-        if(memberEntity.isPresent()){
+        if (memberEntity.isPresent()) {
             return MemberDTO.toMemberDTO(memberEntity.get());
-        }else{
+        } else {
             return null;
         }
+    }
+
+    public MemberDTO updateForm(String myEmail) {
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberEmail(myEmail);
+        if (memberEntity.isPresent()) {
+            return MemberDTO.toMemberDTO(memberEntity.get());
+        } else {
+            return null;
+        }
+    }
+
+    public void update(MemberDTO memberDTO) {
+        memberRepository.save(MemberEntity.toUpdateMemberEntity(memberDTO));
     }
 }
